@@ -1,5 +1,29 @@
 ---
 # tasks file for roles/osp-instance-delete
   - name: Fetch Instance Info
-  - name: Delete instances
-   
+    os_server_info:
+       cloud: openstack
+       region_name: regionOne
+# Should really filter here on the metadata but I have been unable to work out the correct filter name.
+   #    filters:
+   #      metadata.deployment_name: QA
+    register: r_os_servers
+
+  - name: Print discovered servers
+    debug:
+      msg: "{{ instance_name }}"
+      verbosity: 1
+    loop: "{{ r_os_servers.openstack_servers | map(attribute='name')| list }}"
+    loop_control:
+      loop_var: instance_name
+
+  - name: Remove Server
+    os_server:
+     cloud: openstack
+     name: "{{ instance_name }}"
+     state: absent
+     wait: yes
+    loop: "{{ r_os_servers.openstack_servers | map(attribute='name')| list }}"
+    loop_control:
+      loop_var: instance_name
+
