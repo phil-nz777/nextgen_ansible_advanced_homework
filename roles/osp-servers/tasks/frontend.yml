@@ -1,7 +1,7 @@
 ---
 
 # tasks file for osp.servers
-- name: Create server instance
+- name: Create server instance frontend
   os_server:
     cloud: openstack
     name: frontend
@@ -21,7 +21,7 @@
       cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
       curl -o /tmp/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
       cp /tmp/internal.repo /etc/yum.repos.d/internal.repo
-  register: instanceip
+  register: r_instance
 
 
 - name: Wait for async OSP instance creation to complete
@@ -29,7 +29,7 @@
   register: r_wait
   until: r_wait.finished
   retries: 900
-  loop: "{{ r_instances.results }}"
+  loop: "{{ r_instance.results }}"
 
 
 - when: openstack_server_state != 'absent' | default(true)
@@ -44,6 +44,7 @@
         wait: true
         timeout: 180
       register: r_floating_ip
+        msg: "frontend Public IP address = {{ r_floating_ip }}"
 
     - name: Wait for servers by name to be available
       wait_for:

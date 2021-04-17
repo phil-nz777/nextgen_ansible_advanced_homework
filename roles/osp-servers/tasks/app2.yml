@@ -10,7 +10,7 @@
     flavor: m1.medium
     key_name: ansible_ssh
     wait: yes
-    security_groups: app_servers
+    security_groups: apps
     delete_fip: true
     meta: group=apps, deployment_name=QA
     nics:
@@ -21,7 +21,7 @@
       cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
       curl -o /tmp/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
       cp /tmp/internal.repo /etc/yum.repos.d/internal.repo
-  register: instanceip
+  register: r_instance
 
 
 - name: Wait for async OSP instance creation to complete
@@ -29,7 +29,7 @@
   register: r_wait
   until: r_wait.finished
   retries: 900
-  loop: "{{ r_instances.results }}"
+  loop: "{{ r_instance.results }}"
 
 
 - when: openstack_server_state != 'absent' | default(true)
@@ -39,11 +39,12 @@
         cloud: openstack
         state: present
         reuse: yes
-        server: frontend
+        server: app2
         network: ext_network
         wait: true
         timeout: 180
       register: r_floating_ip
+        msg: "app2 Public IP address = {{ r_floating_ip }}"
 
     - name: Wait for servers by name to be available
       wait_for:
