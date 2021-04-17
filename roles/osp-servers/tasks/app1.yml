@@ -12,7 +12,7 @@
     wait: yes
     security_groups: apps
     delete_fip: true
-    meta: group=apps, deployment_name=QA
+    meta: group=apps,deployment_name=QA
     nics:
       - net-name: int_network
     userdata: |

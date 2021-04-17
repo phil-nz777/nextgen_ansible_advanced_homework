@@ -12,7 +12,7 @@
     wait: yes
     security_groups: frontend	# Security group same as name
     delete_fip: true
-    meta: group=frontends, deployment_name=QA
+    meta: group=frontends,deployment_name=QA
     nics:
       - net-name: int_network
     userdata: |
