@@ -6,6 +6,11 @@
     line: "{{ hostvars['db']['ansible_default_ipv4']['address'] }} db"
 #  state: present
 
+- name: Remove Internal.repo if it exists
+  file:
+    path: /etc/yum.repos.d/internal.repo
+    state: absent
+
 - name: Install Tomcat
   yum:
     name: "{{ payload }}"

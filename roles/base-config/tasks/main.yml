@@ -13,6 +13,9 @@
         src: repos_template.j2
         dest: /etc/yum.repos.d/redhat.repo
 
+- name: Remove Internal.repo if it exists
+  file:
+    path: /etc/yum.repos.d/internal.repo
+    state: absent
  
 #- name: install base tools and packages
-
