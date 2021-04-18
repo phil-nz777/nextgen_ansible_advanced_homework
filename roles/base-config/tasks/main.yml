@@ -8,7 +8,11 @@
     replace: 'Defaults  !requiretty'
     backup: yes
 
-- name: enable repos
+- name: enable repos #copy from templates
+   template:
+        src: repos_template.j2
+        dest: /etc/yum.repos.d/redhat.repo
+
  
-- name: install base tools and packages
+#- name: install base tools and packages
 
