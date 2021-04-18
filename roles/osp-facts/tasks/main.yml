@@ -3,11 +3,17 @@
    - name: Fetch Instance Info
      os_server_info:
       cloud: openstack
-     register: result
-   - name: Add host
+     register: r_os_servers
+   
+   - name: Create In Memory Inventory
      add_host:
-      name: "{{ item.public_v4 }}"
-      group: "{{ item.metadata.group }}"
-      # ansible_ssh_private_key_file: ~/.ssh/openstack.pem
-      # ansible_ssh_user: cloud-user
-     with_items: "{{result.openstack_servers}}"
+        group: "{{item.0}}"
+        hostname: "{{item.2}}"
+        ansible_host: "{{item.1}}"
+        ansible_ssh_private_key_file: ~/.ssh/openstack.pem
+        ansible_ssh_user: cloud-user
+     with_together:
+       - "{{ r_os_servers.openstack_servers | map(attribute='metadata.group')| list }}"
+       - "{{ r_os_servers.openstack_servers | map(attribute='interface_ip')| list }}"
+       - "{{ r_os_servers.openstack_servers | map(attribute='name')| list }}"
+   - debug: var=groups

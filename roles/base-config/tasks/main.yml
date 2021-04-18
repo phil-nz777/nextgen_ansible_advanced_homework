@@ -9,7 +9,7 @@
     backup: yes
 
 - name: enable repos #copy from templates
-   template:
+  template:
         src: repos_template.j2
         dest: /etc/yum.repos.d/redhat.repo
 

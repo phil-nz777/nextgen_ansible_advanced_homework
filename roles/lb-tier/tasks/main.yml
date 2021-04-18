@@ -1,3 +1,13 @@
 ---
-
+  - name: Install {{ payload }}
+    yum:
+      name: "{{ payload }}"
+      state: latest
+      enablerepo: redhat.repo
+      disablerepo: internal.repo
+  - name: Update haproxy.cfg from template
+    template:
+      src: haproxy.cfg.j2
+      dest: /etc/haproxy/haproxy.cfg
+    notify: start {{ payload }}
 

@@ -1,2 +1,19 @@
 ---
+- name: Add db IP address to app servers /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*db$'
+    line: "{{ hostvars['db']['ansible_default_ipv4']['address'] }} db"
+#  state: present
+
+- name: Install Tomcat
+  yum:
+    name: "{{ payload }}"
+    state: latest
+
+- name: Update tomcat index.html from template
+  template:
+    src: index.html.j2
+    dest: "{{ tomcat_web_root }}/index.html"
+  notify: start {{ payload }}
 
