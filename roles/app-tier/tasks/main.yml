@@ -3,18 +3,21 @@
   lineinfile:
     dest: /etc/hosts
     regexp: '.*db$'
-    line: "{{ hostvars['db']['ansible_default_ipv4']['address'] }} db"
-#  state: present
-
-- name: Remove Internal.repo if it exists
-  file:
-    path: /etc/yum.repos.d/internal.repo
-    state: absent
+#    line: "{{ groups.appdbs[0].ansible_host }} {{ groups.appdbs[0] }}"
+# HArdcoding until I workout the inventory reference for public ip address
+    line: "{{ 192.0.2.194 }} {{ groups.appdbs[0] }}"
+#    line: "{{ groups.appdbs[0].ansible_host }} {{ groups.appdbs[0] }}"
+    state: present
 
 - name: Install Tomcat
   yum:
     name: "{{ payload }}"
     state: latest
+
+- name: Ensure "{{ payload }}" web root directory exists
+  file:
+    path: /usr/share/tomcat/webapps/ROOT
+    state: directory
 
 - name: Update tomcat index.html from template
   template:

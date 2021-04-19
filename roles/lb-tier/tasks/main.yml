@@ -1,9 +1,4 @@
 ---
-  - name: Remove Internal.repo if it exists
-    file:
-      path: /etc/yum.repos.d/internal.repo
-      state: absent
-
   - name: Install {{ payload }}
     yum:
       name: "{{ payload }}"
