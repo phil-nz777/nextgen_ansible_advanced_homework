@@ -1,17 +1,24 @@
 ---
- - name: Add app servers IP address to frontends /etc/hosts
-  lineinfile:
-    dest: /etc/hosts
-    regexp: '.*db$'
-    line: "{{  hostvars[ groups.app[0] ].ansible_host }} {{ groups.app[0] }}"
-    line: "{{  hostvars[ groups.app[1] ].ansible_host }} {{ groups.app[1] }}"
-    state: present
+  - name: Add {{ groups.app[0] }} servers IP address to frontends /etc/hosts
+    lineinfile:
+     dest: /etc/hosts
+     regexp: '.*db$'
+     line: "{{  hostvars[ groups.app[0] ].ansible_host }} {{ groups.app[0] }}"
+     state: present
 
-  - name: Install {{ payload }}
+  - name: Add {{ groups.app[1] }} servers IP address to frontends /etc/hosts
+    lineinfile:
+     dest: /etc/hosts
+     regexp: '.*db$'
+     line: "{{  hostvars[ groups.app[1] ].ansible_host }} {{ groups.app[1] }}"
+     state: present
+
+  - name: Install "{{ payload }}"
     yum:
       name: "{{ payload }}"
       #disablerepo: "internal.repo"
       state: present
+
   - name: Update haproxy.cfg from template
     template:
       src: haproxy.cfg.j2
