@@ -5,8 +5,8 @@
     regexp: '.*db$'
 #    line: "{{ groups.appdbs[0].ansible_host }} {{ groups.appdbs[0] }}"
 # HArdcoding until I workout the inventory reference for public ip address
-    line: "{{ 192.0.2.194 }} {{ groups.appdbs[0] }}"
-#    line: "{{ groups.appdbs[0].ansible_host }} {{ groups.appdbs[0] }}"
+#    line: "192.0.2.194 {{ groups.appdbs[0] }}"
+    line: "{{  hostvars[ groups.appdbs[0] ].ansible_host }} {{ groups.appdbs[0] }}"
     state: present
 
 - name: Install Tomcat
