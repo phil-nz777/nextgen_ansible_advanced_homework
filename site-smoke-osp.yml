@@ -1,4 +1,4 @@
-- hosts: workstation
+- hosts: localhost
   gather_facts: false
   tasks:
   - name: OpenStack servers
@@ -7,13 +7,14 @@
        server: frontend
        region_name: regionOne
     register: r_os_servers
+  - debug:
+      msg: "{{ r_os_servers.openstack_servers[0].interface_ip }}"
 
-  - name: Curl website
+#      msg: "{{ r_os_servers.openstack_servers[0].public_v4 | list }}"
+  - name: Curl frontend loadbalancer
     uri:
-     url: "http://{{item.public_v4}}"
+     url: "http://{{ r_os_servers.openstack_servers[0].public_v4 }}"
      return_content: yes
-    with_items:
-     - "{{ r_os_servers.ansible_info.openstack_servers }}"
     register: webpage
 
   - name: Fail if 'Ansible has done its job' is not in the page content
